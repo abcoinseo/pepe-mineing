@@ -1,0 +1,137 @@
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(to right, #4facfe, #00f2fe);
+    color: #333;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Container */
+  #app {
+    width: 90%;
+    max-width: 800px;
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Header */
+  header {
+    background: #0078d7;
+    color: white;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  header h1 {
+    font-size: 2rem;
+  }
+  
+  header p {
+    font-size: 1rem;
+  }
+  
+  /* Main */
+  main {
+    padding: 20px;
+  }
+  
+  h2 {
+    color: #0078d7;
+    margin-bottom: 10px;
+  }
+  
+  .recorder, .archive {
+    margin-bottom: 30px;
+  }
+  
+  button {
+    padding: 10px 20px;
+    margin: 10px 5px 0 0;
+    background: #4facfe;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  button:disabled {
+    background: #ddd;
+    cursor: not-allowed;
+  }
+  
+  button:hover:not(:disabled) {
+    background: #0078d7;
+  }
+  
+  input {
+    padding: 10px;
+    margin-top: 10px;
+    width: 100%;
+    border: 1px solid #ff0000;
+    border-radius: 5px;
+  }
+  
+  #recording-list {
+    margin-top: 20px;
+  }
+  
+  .recording {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    padding: 10px;
+    background: #be0000;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  }
+  
+  .custom-audio-player {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .custom-audio-player button {
+    background: #068fff;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+  }
+  
+  .custom-audio-player button:hover {
+    background: #0080ff;
+  }
+  
+  .progress-bar {
+    flex: 1;
+    height: 5px;
+    background: #ff0000;
+    position: relative;
+    border-radius: 5px;
+    overflow: hidden;
+  }
+  
+  .progress-bar span {
+    display: block;
+    height: 100%;
+    background: #0089fa;
+    width: 0%;
+    transition: width 0.1s linear;
+  }
+  

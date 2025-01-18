@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Page</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #0f0;
+            overflow: hidden;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #111;
+            border-bottom: 2px solid #0f0;
+        }
+        header h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+        header .wallet {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+        }
+        header .wallet i {
+            font-size: 24px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+        .hacker-icon {
+            font-size: 300px;
+            color: #0f0;
+            margin-bottom: 20px;
+        }
+        .links-list {
+            margin-top: 20px;
+            list-style-type: none;
+            padding: 0;
+        }
+        .links-list li {
+            margin: 10px 0;
+            font-size: 18px;
+            cursor: pointer;
+            color: #0f0;
+        }
+        .links-list li:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Task Page</h1>
+        <div class="wallet">
+            <i class="material-icons" onclick="redirectToWallet()">account_balance_wallet</i>
+            <span id="balance">Balance: 0 Pepe</span>
+        </div>
+    </header>
+    <div class="container">
+        <div class="hacker-icon">
+            <i class="material-icons">security</i>
+        </div>
+        <div>
+            <h2>Earn 0.2 Pepe Coins</h2>
+            <ul class="links-list" id="linkList">
+                <!-- Random links will be inserted here -->
+            </ul>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase configuration (Optional, if you want to store the balance in Firebase)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyBW1WPXUN8DYhT6npZQYoQ3l4J-jFSbzfg",
+            authDomain: "ab-studio-marketcap.firebaseapp.com",
+            databaseURL: "https://ab-studio-marketcap-default-rtdb.firebaseio.com",
+            projectId: "ab-studio-marketcap",
+            storageBucket: "ab-studio-marketcap.firebasestorage.app",
+            messagingSenderId: "115268088088",
+            appId: "1:115268088088:web:65643a047f92bfaa66ee6d"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Links array
+        const links = [
+            "https://example.com",
+            "https://google.com",
+            "https://openai.com",
+            "https://github.com",
+            "https://firebase.google.com"
+        ];
+
+        // DOM elements
+        const balanceElement = document.getElementById('balance');
+        const linkListElement = document.getElementById('linkList');
+
+        // Local storage for balance
+        let localBalance = parseFloat(localStorage.getItem('pepeBalance')) || 0;
+        updateBalanceDisplay(localBalance);
+
+        // Display random links
+        function displayRandomLinks() {
+            linkListElement.innerHTML = '';
+            for (let i = 0; i < links.length; i++) {
+                const randomIndex = Math.floor(Math.random() * links.length);
+                const listItem = document.createElement('li');
+                listItem.textContent = `Go to: ${links[randomIndex]}`;
+                listItem.onclick = () => handleLinkClick(links[randomIndex]);
+                linkListElement.appendChild(listItem);
+            }
+        }
+
+        // Handle link click
+        function handleLinkClick(link) {
+            // Increment balance
+            localBalance += 0.2;
+            localStorage.setItem('pepeBalance', localBalance);
+            updateBalanceDisplay(localBalance);
+
+            // Optionally, log transaction to Firebase or perform other actions
+            alert(`You've earned 0.2 Pepe! New Balance: ${localBalance.toFixed(2)} Pepe`);
+
+            // Open link in a new tab
+            window.open(link, '_blank');
+        }
+
+        // Update balance display
+        function updateBalanceDisplay(balance) {
+            balanceElement.textContent = `Balance: ${balance.toFixed(2)} Pepe`;
+        }
+
+        // Redirect to wallet page
+        function redirectToWallet() {
+            window.location.href = 'wallet.html';
+        }
+
+        // Initialize
+        displayRandomLinks();
+
+    </script>
+</body>
+</html>

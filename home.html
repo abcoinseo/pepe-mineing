@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pepe Coin Miner</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #0f0;
+            overflow: hidden;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: #111;
+            border-bottom: 2px solid #0f0;
+        }
+        header h1 {
+            font-size: 20px;
+            margin: 0;
+        }
+        header .wallet {
+            display: flex;
+            align-items: center;
+            font-size: 18px;
+        }
+        header .wallet i {
+            font-size: 24px;
+            margin-right: 8px;
+            cursor: pointer;
+        }
+        .container {
+            padding: 20px;
+            text-align: center;
+        }
+        .terminal, .transaction-box, .rain-box {
+            background-color: #111;
+            color: #0f0;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #0f0;
+            height: 80px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .rain-box {
+            overflow-y: auto;
+            white-space: pre-wrap;
+            text-align: left;
+            height: 120px; /* Adjust height as needed */
+        }
+        .nav-bar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background-color: #111111;
+      padding: 10px 0;
+    }
+    .nav-bar button {
+      width: 50px;
+      height: 50px;
+      background-color: black;
+      border: none;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+    }
+    .nav-bar button:focus {
+      outline: 2px solid white;
+    }
+    .nav-bar button.home {
+      background-image: url('mine.png');
+    }
+    .nav-bar button.leader {
+      background-image: url('task.png');
+    }
+   
+    .nav-bar button.airdrop {
+      background-image: url('wallet.png');
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>AB Studio Miner</h1>
+        <div class="wallet">
+            <i class="material-icons" onclick="redirectToWallet()">account_balance_wallet</i>
+            <span id="balance">Balance: 0 Pepe</span>
+        </div>
+    </header>
+    <div class="nav-bar">
+        <button class="home" onclick="window.location.href='home.html'"></button>
+        
+      
+        <button class="airdrop" onclick="window.location.href='wallet.html'"></button>
+      </div>
+    <div class="container">
+        <div class="terminal" id="terminal">Terminal is running...</div>
+        <div class="transaction-box" id="transactionBox">Transactions will appear here...</div>
+        <div class="rain-box" id="rainBox">Text rain will appear here...</div>
+    </div>
+
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getDatabase, ref, set, update, onValue } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBW1WPXUN8DYhT6npZQYoQ3l4J-jFSbzfg",
+            authDomain: "ab-studio-marketcap.firebaseapp.com",
+            databaseURL: "https://ab-studio-marketcap-default-rtdb.firebaseio.com",
+            projectId: "ab-studio-marketcap",
+            storageBucket: "ab-studio-marketcap.firebasestorage.app",
+            messagingSenderId: "115268088088",
+            appId: "1:115268088088:web:65643a047f92bfaa66ee6d"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // DOM Elements
+        const balanceElement = document.getElementById('balance');
+        const terminalElement = document.getElementById('terminal');
+        const transactionBoxElement = document.getElementById('transactionBox');
+        const rainBoxElement = document.getElementById('rainBox');
+
+        // Local Storage
+        let localBalance = parseFloat(localStorage.getItem('pepeCoins')) || 0;
+        updateBalanceDisplay(localBalance);
+
+        // Firebase Reference
+        const walletRef = ref(db, 'wallet/');
+
+        // Real-time Sync from Firebase
+        onValue(walletRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data && data.balance !== undefined) {
+                localBalance = data.balance;
+                localStorage.setItem('pepeCoins', localBalance);
+                updateBalanceDisplay(localBalance);
+            }
+        });
+
+        // Mining Logic
+        function startMining() {
+            setInterval(() => {
+                const minedCoins = (Math.random() * (0.0006 - 0.00009) + 0.00009).toFixed(6);
+                localBalance += parseFloat(minedCoins);
+                localStorage.setItem('pepeCoins', localBalance);
+                updateFirebaseBalance(localBalance);
+                updateBalanceDisplay(localBalance);
+                logTransaction(`+${minedCoins} Pepe mined`);
+                logTerminal(`Mining... Found ${minedCoins} Pepe`);
+            }, 1000);
+        }
+
+        // Terminal Log
+        function logTerminal(message) {
+            terminalElement.innerHTML += message + '<br>';
+            terminalElement.scrollTop = terminalElement.scrollHeight;
+        }
+
+        // Transaction Log
+        function logTransaction(message) {
+            transactionBoxElement.innerHTML += message + '<br>';
+            transactionBoxElement.scrollTop = transactionBoxElement.scrollHeight;
+        }
+
+        // Text Rain
+        function startTextRain() {
+            const words = ['Pepe is mining', 'Block Found', 'No Match', 'Block Mismatch', 'Mining...', 'No Found'];
+            setInterval(() => {
+                const randomText = words[Math.floor(Math.random() * words.length)];
+                const randomLang = ['en', 'ja', 'ko', 'hi'][Math.floor(Math.random() * 4)];
+                rainBoxElement.innerHTML += `<span style="font-size:${12 + Math.random() * 10}px;">${randomText} (${randomLang})</span> `;
+                rainBoxElement.scrollTop = rainBoxElement.scrollHeight;
+            }, Math.random() * (50 - 1) + 10);
+        }
+
+        // Update Balance Display
+        function updateBalanceDisplay(balance) {
+            balanceElement.textContent = `Balance: ${balance.toFixed(6)} Pepe`;
+        }
+
+        // Update Firebase Balance
+        function updateFirebaseBalance(balance) {
+            update(walletRef, { balance: balance })
+                .catch((error) => console.error('Error updating Firebase balance:', error));
+        }
+
+        // Redirect to Wallet
+        function redirectToWallet() {
+            window.location.href = 'wallet.html';
+        }
+
+        // Start Mining and Text Rain
+        startMining();
+        startTextRain();
+    </script>
+</body>
+</html>

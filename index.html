@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #000;
+            color: #0f0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+        .loader {
+            width: 80px;
+            height: 80px;
+            border: 8px solid #0f0;
+            border-top: 8px solid transparent;
+            border-radius: 50%;
+            animation: spin 2s linear infinite;
+        }
+        .loading-text {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <div class="loader"></div>
+        <div class="loading-text">Loading...</div>
+    </div>
+
+    <script>
+        // Set random time between 5 and 7 seconds
+        const redirectTime = Math.floor(Math.random() * (7000 - 5000 + 1)) + 5000;
+
+        // Redirect to home.html after the specified time
+        setTimeout(function() {
+            window.location.href = 'home.html';
+        }, redirectTime);
+    </script>
+</body>
+</html>

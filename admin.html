@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leaderboard</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #0f0;
+        }
+        header {
+            text-align: center;
+            padding: 15px;
+            background-color: #111;
+            border-bottom: 2px solid #0f0;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .leaderboard-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        .user-box {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background-color: #111;
+            width: 90%;
+            max-width: 600px;
+            margin: 10px 0;
+            padding: 10px 20px;
+            border: 2px solid #0f0;
+            border-radius: 5px;
+        }
+        .user-box img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+        .user-details {
+            flex-grow: 1;
+            margin: 0 15px;
+        }
+        .user-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+        .user-balance {
+            font-size: 14px;
+            color: #0f0;
+        }
+        .rank {
+            font-size: 16px;
+            font-weight: bold;
+            color: #ff0;
+        }
+    </style>
+</head>
+<body>
+    <header>Leaderboard</header>
+    <div class="leaderboard-container" id="leaderboard">
+        <!-- Dynamic user boxes will appear here -->
+    </div>
+
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js";
+        import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.2.0/firebase-database.js";
+
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBW1WPXUN8DYhT6npZQYoQ3l4J-jFSbzfg",
+            authDomain: "ab-studio-marketcap.firebaseapp.com",
+            databaseURL: "https://ab-studio-marketcap-default-rtdb.firebaseio.com",
+            projectId: "ab-studio-marketcap",
+            storageBucket: "ab-studio-marketcap.firebasestorage.app",
+            messagingSenderId: "115268088088",
+            appId: "1:115268088088:web:65643a047f92bfaa66ee6d"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // DOM Elements
+        const leaderboardContainer = document.getElementById('leaderboard');
+
+        // Predefined logos
+        const logos = [
+            'logo1.png',
+            'logo2.png',
+            'logo3.png',
+            'logo4.png',
+            'logo5.png',
+        ];
+
+        // Fetch leaderboard data and update every 30 seconds
+        function updateLeaderboard() {
+            const usersRef = ref(db, 'users/');
+            onValue(usersRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const usersArray = Object.entries(data).map(([key, value]) => ({
+                        name: value.name || 'Unknown',
+                        balance: value.balance || 0,
+                        logo: logos[Math.floor(Math.random() * logos.length)]
+                    }));
+
+                    // Sort users by balance (descending)
+                    usersArray.sort((a, b) => b.balance - a.balance);
+
+                    // Render leaderboard
+                    renderLeaderboard(usersArray);
+                }
+            });
+        }
+
+        // Render leaderboard
+        function renderLeaderboard(users) {
+            leaderboardContainer.innerHTML = ''; // Clear existing leaderboard
+
+            users.forEach((user, index) => {
+                const userBox = document.createElement('div');
+                userBox.classList.add('user-box');
+
+                const rank = document.createElement('div');
+                rank.classList.add('rank');
+                rank.textContent = `#${index + 1}`;
+
+                const userImage = document.createElement('img');
+                userImage.src = user.logo;
+                userImage.alt = 'User Logo';
+
+                const userDetails = document.createElement('div');
+                userDetails.classList.add('user-details');
+
+                const userName = document.createElement('div');
+                userName.classList.add('user-name');
+                userName.textContent = user.name;
+
+                const userBalance = document.createElement('div');
+                userBalance.classList.add('user-balance');
+                userBalance.textContent = `Balance: ${user.balance.toFixed(6)} Pepe`;
+
+                userDetails.appendChild(userName);
+                userDetails.appendChild(userBalance);
+                userBox.appendChild(rank);
+                userBox.appendChild(userImage);
+                userBox.appendChild(userDetails);
+                leaderboardContainer.appendChild(userBox);
+            });
+        }
+
+        // Initialize leaderboard updates
+        setInterval(updateLeaderboard, 30000); // Update every 30 seconds
+        updateLeaderboard(); // Initial update
+    </script>
+</body>
+</html>
